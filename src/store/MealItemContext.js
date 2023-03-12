@@ -1,11 +1,17 @@
-import React , {useReducer} from "react";
+import React , {useReducer, useState} from "react";
 
 const mealContext = React.createContext({
     cartItems:[],
     totalAmount:0,
     addItem:(item)=>{},
     removeItem:(id)=>{},
-    clearCart:()=>{}   
+    clearCart:()=>{},
+    isLogined : false,
+    jwt:null ,
+    setUserLogin : (isLogin) => {},
+    setAuthJWT : (token) => {},
+    setLoginedUser:(id,name,email)=>{},
+    getUser:()=>{}
 })
 
 
@@ -18,6 +24,34 @@ const maintainCart  = (cart,action) => {
 export function MealContextProvider(props){
       
    const[selectedItems,setSelectedItems] = useReducer(maintainCart,{cartItems : [] , totalAmount:0})
+   const[isLogined,setIsLogined] = useState(false)
+   const[jwt,setJWT] = useState(null)
+   const [user,setUser] = useState({
+    id:"",
+    name:"",
+    email:""
+   })
+
+   const setLoginedUser = (id,name,email) => {
+       const data = {
+        id:id,
+        name:name,
+        email:email
+       }
+       setUser(data)
+   }
+
+   const getUser = () => {
+       return user 
+   }
+
+    const  setUserLogin = (isLogin) => {
+        setIsLogined(isLogin)
+    }
+
+    const setAuthJWT = (token) => {
+        setJWT(token)
+    }
 
     console.log("cartItems : " + JSON.stringify(selectedItems.cartItems) + " total Amount : " + JSON.stringify(selectedItems.totalAmount))
 
@@ -88,7 +122,13 @@ export function MealContextProvider(props){
             totalAmount:selectedItems.totalAmount,
             addItem:addItem,
             removeItem:removeItem,
-            clearCart:clearCart
+            clearCart:clearCart,
+            setUserLogin:setUserLogin,
+            setAuthJWT:setAuthJWT,
+            isLogined:isLogined,
+            jwt:jwt,
+            setLoginedUser:setLoginedUser,
+            getUser:getUser
             }}>
                    
             {props.children}
